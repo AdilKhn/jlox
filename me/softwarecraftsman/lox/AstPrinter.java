@@ -1,7 +1,6 @@
 package me.softwarecraftsman.lox;
 
 import me.softwarecraftsman.lox.Expr.Binary;
-import me.softwarecraftsman.lox.Expr.Grouping;
 import me.softwarecraftsman.lox.Expr.Literal;
 import me.softwarecraftsman.lox.Expr.Unary;
 
