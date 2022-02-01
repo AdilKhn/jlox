@@ -4,11 +4,21 @@ import java.util.List;
 import static me.softwarecraftsman.lox.TokenType.*;
 
 public class Parser {
+    private static class ParseError extends RuntimeException{}
+
     private final List<Token> tokens;
     private int current = 0;
     
     Parser(List<Token> tokens) {
         this.tokens = tokens;
+    }
+
+    Expr parse() {
+        try {
+            return expression();
+        } catch(ParseError error) {
+            return null;
+        }
     }
 
     private Expr expression() {
@@ -82,6 +92,8 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
+
+        throw error(peek(), "Expect expression.");
         
     }
 
@@ -93,6 +105,12 @@ public class Parser {
             }
         }
         return false;
+    }
+
+    private Token consume(TokenType type, String message) {
+        if(check(type)) return advance();
+
+        throw error(peek(), message);
     }
 
     private boolean check(TokenType type){
@@ -117,5 +135,30 @@ public class Parser {
         return tokens.get(current - 1);
     }
 
+    private ParseError error(Token token, String message) {
+        Lox.error(token, message);
+        return new ParseError();
+    }
+
+    private void synchronize() {
+        advance();
+
+        while(!isAtEnd()) {
+            if (previous().type == SEMICOLON) return;
+
+            switch(peek().type) {
+                case CLASS:
+                case FUN:
+                case VAR:
+                case FOR:
+                case IF:
+                case WHILE:
+                case PRINT:
+                case RETURN:
+                  return;
+            }
+            advance();
+        }
+    }
 
 }
