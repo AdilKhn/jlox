@@ -5,7 +5,7 @@ import me.softwarecraftsman.lox.Expr.Grouping;
 import me.softwarecraftsman.lox.Expr.Literal;
 import me.softwarecraftsman.lox.Expr.Unary;
 
-class Interpreter implements Expr.Visitor<Object> {
+class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     
     void interpret(Expr expression) {
         try {
